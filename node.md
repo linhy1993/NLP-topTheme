@@ -2,14 +2,15 @@
 	* the characters of the phrase ? random ? 
 	* text bolb : extract noun ? or noun + phrase ? 
 	* wordnet : how to compare ? 
+	* good, brillant, excellent issue ?  --设个wordnet值, 然后分包,并合并一个包内的inversed indexes
 
 
 
 # Notes:
 1. sepeate the paragraph
-	* \r\p
-	* whitespace in tail of line 
-	* whitespace in next line 
+	* \r\n
+	* whitespace in tail of line （length of 45 alphabets）
+	* whitespace in next line (including case : empty line between lines)
 
 
 2. for every sentence
