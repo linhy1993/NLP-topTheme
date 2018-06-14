@@ -70,16 +70,3 @@ class TopTheme:
                     # stemming
                     for t in removed_stopwords:
                         token = porter_stemmer.stem(t)
-
-
-
-
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
