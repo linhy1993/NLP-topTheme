@@ -35,15 +35,17 @@ def sentence_tokenize(text, language='english'):
     :param language: the language of the text
     :type language: str
     """
-    sentence_arr = {}
+    lst_sentence = []
     if language == 'english':
-        sentence_arr = sent_tokenize(text, language='english')
+        lst_sentence = sent_tokenize(text, language='english')
     elif language == 'french':
-        sentence_arr = sent_tokenize(text, language='french')
+        lst_sentence = sent_tokenize(text, language='french')
     else:
         print('ERROR:language inputed is out of support in sentence_tokenize()')
 
-    return sentence_arr
+    return lst_sentence
+
+def indexer():
 
 
 def theme_cluster(words_arr):

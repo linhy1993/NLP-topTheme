@@ -10,12 +10,14 @@ def save_pickle(data, file_path):
         pickle.dump(data, file, pickle.HIGHEST_PROTOCOL)
 
 
-def read_pickle(data, file_path):
+def read_pickle(file_path):
+    data = ""
     if not file_path.endswith(".pickle"):
         print("ERROR: file suffix missing or file suffix is not appropriate.")
-        pass
-    with open(file_path, 'rb') as file:
-        data = pickle.load(file)
+    else:
+        with open(file_path, 'rb') as file:
+            data = pickle.load(file)
+    return data
 
 
 def save_txt(str_data, file_path):
@@ -26,12 +28,14 @@ def save_txt(str_data, file_path):
         file.write(str_data)
 
 
-def read_txt(str_data, file_path):
+def read_txt(file_path):
+    date = ""
     if not file_path.endswith(".txt"):
         print("ERROR: file suffix missing or file suffix is not appropriate.")
-        pass
-    with open(file_path, 'r') as file:
-        str_data = file.read()
+    else:
+        with open(file_path, 'r') as file:
+            date = file.read()
+    return data
 
 
 def str_of(data):
