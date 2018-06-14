@@ -1,5 +1,4 @@
 import nltk
-import pickle
 from nltk import wordpunct_tokenize
 from nltk.corpus import stopwords
 from nltk.tokenize.punkt import PunktSentenceTokenizer
@@ -49,13 +48,8 @@ def sentence_tokenize(text, language='english'):
 
 def theme_cluster(words_arr):
     """
-
     language supported : english, french
     :param words_arr:
     :type words_arr: array of str
     """
-    
-
-
-
-if __name__ == '__main__':
+    return words_arr
