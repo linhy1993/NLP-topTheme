@@ -1,0 +1,32 @@
+{"count": 2, "ids": [14], "pos": "np", "rank": 0.11647506117527012, "text": "work"}
+{"count": 1, "ids": [42], "pos": "np", "rank": 0.10852653264941885, "text": "anything"}
+{"count": 4, "ids": [2], "pos": "np", "rank": 0.10302338186189722, "text": "team"}
+{"count": 1, "ids": [36, 37], "pos": "np", "rank": 0.055766828352332334, "text": "stressful deadlines"}
+{"count": 1, "ids": [28], "pos": "np", "rank": 0.03810838828873229, "text": "pride"}
+{"count": 1, "ids": [7, 8], "pos": "np", "rank": 0.0376188057098441, "text": "many departments"}
+{"count": 1, "ids": [32], "pos": "nn", "rank": 0.036737026569761924, "text": "ownership"}
+{"count": 2, "ids": [16, 17], "pos": "np", "rank": 0.03541231961762664, "text": "high standard"}
+{"count": 1, "ids": [31], "pos": "nn", "rank": 0.03461729674376572, "text": "sense"}
+{"count": 1, "ids": [10], "pos": "vbp", "rank": 0.0313801437127255, "text": "tackle"}
+{"count": 1, "ids": [39, 40], "pos": "np", "rank": 0.029695052406214943, "text": "longest hours"}
+{"count": 2, "ids": [41], "pos": "vb", "rank": 0.029330903723509463, "text": "demand"}
+{"count": 1, "ids": [29], "pos": "nns", "rank": 0.02919028024982222, "text": "projects"}
+{"count": 1, "ids": [19, 20], "pos": "np", "rank": 0.029166802185973, "text": "professional development"}
+{"count": 1, "ids": [9], "pos": "nnp", "rank": 0.028315530195018306, "text": "cdpq"}
+{"count": 1, "ids": [37], "pos": "nns", "rank": 0.027883414176166167, "text": "deadlines"}
+{"count": 1, "ids": [6], "pos": "np", "rank": 0.027053801305005228, "text": "requests"}
+{"count": 1, "ids": [21], "pos": "nn", "rank": 0.024992676095487196, "text": "satisfaction"}
+{"count": 2, "ids": [15], "pos": "vbn", "rank": 0.023812335304069236, "text": "produced"}
+{"count": 1, "ids": [25, 26], "pos": "np", "rank": 0.018767184836533415, "text": "individual member"}
+{"count": 1, "ids": [35], "pos": "vb", "rank": 0.018258898729397687, "text": "meet"}
+{"count": 2, "ids": [17], "pos": "nn", "rank": 0.01770615980881332, "text": "standard"}
+{"count": 1, "ids": [8], "pos": "nns", "rank": 0.01530574911804084, "text": "departments"}
+{"count": 1, "ids": [40], "pos": "nns", "rank": 0.014847526203107472, "text": "hours"}
+{"count": 1, "ids": [20], "pos": "nn", "rank": 0.01350968628603649, "text": "development"}
+{"count": 1, "ids": [26], "pos": "nn", "rank": 0.009383592418266707, "text": "member"}
+{"count": 1, "ids": [18], "pos": "vbz", "rank": 0.008554930771419526, "text": "cares"}
+{"count": 5, "ids": [1], "pos": "nn", "rank": 0.007311938301148755, "text": "x"}
+{"count": 1, "ids": [5], "pos": "vbp", "rank": 0.007311938301148755, "text": "receive"}
+{"count": 1, "ids": [23], "pos": "vbz", "rank": 0.007311938301148755, "text": "resonates"}
+{"count": 1, "ids": [34], "pos": "vbz", "rank": 0.007311938301148755, "text": "pushes"}
+{"count": 1, "ids": [38], "pos": "vbz", "rank": 0.007311938301148755, "text": "shoulders"}
