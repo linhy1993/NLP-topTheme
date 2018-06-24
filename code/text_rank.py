@@ -2,9 +2,9 @@ import pytextrank
 import sys
 
 path_in = "input/in.json"
-path_stage1 = "s1.json"
-path_stage2 = "s2.json"
-path_stage3 = "s3.json"
+path_stage1 = "test_data/s1.json"
+path_stage2 = "test_data/s2.json"
+path_stage3 = "test_data/s3.json"
 # stage1 : generate graph
 with open(path_stage1, 'w') as file:
     json_iterator = pytextrank.json_iter(path_in)

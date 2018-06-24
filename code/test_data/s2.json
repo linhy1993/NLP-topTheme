@@ -1,0 +1,15 @@
+{"count": 3, "ids": [2], "pos": "np", "rank": 0.1646648062016431, "text": "team"}
+{"count": 1, "ids": [21], "pos": "np", "rank": 0.14793413316223752, "text": "anything"}
+{"count": 1, "ids": [14, 15], "pos": "np", "rank": 0.1239383347450503, "text": "stressful deadlines"}
+{"count": 2, "ids": [7], "pos": "np", "rank": 0.0944858739028705, "text": "work"}
+{"count": 2, "ids": [9, 10], "pos": "np", "rank": 0.07998822929679136, "text": "high standard"}
+{"count": 1, "ids": [17, 18], "pos": "np", "rank": 0.06720970338855675, "text": "longest hours"}
+{"count": 1, "ids": [15], "pos": "nns", "rank": 0.06196916737252515, "text": "deadlines"}
+{"count": 2, "ids": [8], "pos": "vbn", "rank": 0.05670484679265534, "text": "produced"}
+{"count": 2, "ids": [10], "pos": "nn", "rank": 0.03999411464839568, "text": "standard"}
+{"count": 2, "ids": [20], "pos": "vb", "rank": 0.03998209516024343, "text": "demand"}
+{"count": 1, "ids": [13], "pos": "vb", "rank": 0.039876705593143595, "text": "meet"}
+{"count": 1, "ids": [18], "pos": "nns", "rank": 0.033604851694278376, "text": "hours"}
+{"count": 4, "ids": [1], "pos": "nn", "rank": 0.016549046013869636, "text": "x"}
+{"count": 1, "ids": [12], "pos": "vbz", "rank": 0.016549046013869636, "text": "pushes"}
+{"count": 1, "ids": [16], "pos": "vbz", "rank": 0.016549046013869636, "text": "shoulders"}

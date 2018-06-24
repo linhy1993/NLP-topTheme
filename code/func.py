@@ -45,7 +45,20 @@ def sentence_tokenize(text, language='english'):
 
     return lst_sentence
 
-def indexer():
+def indexer(token, sentence_id, index_container):
+    """
+    here not consider postion and freqence of tokens
+    here not consider the memory size(spimi algorithm)
+    """
+    if token in index_container.keys():
+        # not consider position and freqence
+        posting_list = index_container[token]
+        if sentence_id not in posting_list:
+            posting_list.append(sentence_id)
+    else:
+        new_posting_list = [sentence_id]
+        index_container[token] = new_posting_list
+
 
 
 def theme_cluster(words_arr):
