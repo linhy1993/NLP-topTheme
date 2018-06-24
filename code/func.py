@@ -2,6 +2,7 @@ import nltk
 from nltk import wordpunct_tokenize
 from nltk.corpus import stopwords
 from nltk.tokenize.punkt import PunktSentenceTokenizer
+from textblob import TextBlob
 
 
 def language_regonize(text):
