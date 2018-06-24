@@ -47,7 +47,7 @@ class TopTheme:
             print("ERROR: theme_cluster never setted")
             pass
         if isinstance(self.indexer, function):
-            print("ERROR: theme_cluster never setted")
+            print("ERROR: indexer never setted")
             pass
         if isinstance(self.phrase_extractor, function):
             print("ERROR: phrase_extractor never setted")

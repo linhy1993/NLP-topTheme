@@ -48,7 +48,7 @@ def sentence_tokenize(text, language='english'):
 def indexer(token, sentence_id, index_container):
     """
     here not consider postion and freqence of tokens
-    here not consider the memory size(spimi algorithm)
+    here not consider the memory size(spimi algorith)
     """
     if token in index_container.keys():
         # not consider position and freqence
@@ -59,8 +59,6 @@ def indexer(token, sentence_id, index_container):
         new_posting_list = [sentence_id]
         index_container[token] = new_posting_list
 
-
-
 def theme_cluster(words_arr):
     """
     language supported : english, french
@@ -68,3 +66,13 @@ def theme_cluster(words_arr):
     :type words_arr: array of str
     """
     return words_arr
+
+def phrases_extract(text):
+    """
+    input text
+    return the phrases of text
+    :return: phrases
+    :type: str
+    """
+    blob = TextBlob(text)
+    return blob.noun_phrases
