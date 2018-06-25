@@ -13,4 +13,4 @@ if __name__ == '__main__':
     top_theme_obj.set_theme_cluster(theme_cluster)
     top_theme_obj.set_indexer(indexer)
     top_theme_obj.set_phrase_extractor(phrases_extract)
-    top_theme_obj.build("input")
+    top_theme_obj.build("in")

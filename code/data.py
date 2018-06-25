@@ -35,7 +35,9 @@ def read_txt(file_path):
         print("[INFO] read_txt from " + file_path)
 
     data = ""
-    if not file_path.endswith(".txt"):
+    if file_path.startswith(".") and IF_DEBUG:
+        print("[WARNING] hidden file (.*) has been passed.")
+    elif not file_path.endswith(".txt"):
         print("[ERROR] file suffix missing or file suffix is not appropriate.")
     else:
         with open(file_path, 'r') as file:
@@ -58,11 +60,11 @@ if __name__ == '__main__':
 
     # test save_txt
     print("----- test save_txt -----")
-    save_txt(test_data, 'data_test.txt')
+    save_txt(test_data, 'out/test_text.txt')
 
     # test save_pickle & read_pickle
     print("----- test save_pickle & read_pickle -----")
-    test_file = 'data_test_pickle.pickle'
+    test_file = 'out/test_pickle.pickle'
     save_pickle(test_data, test_file)
     data = read_pickle(test_file)
     print(data)
