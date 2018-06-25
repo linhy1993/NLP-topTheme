@@ -1,12 +1,16 @@
 import os
+import sys
 import nltk
+from types import FunctionType
 from nltk.stem.porter import PorterStemmer
 from nltk.corpus import stopwords
 from data import save_pickle
 from data import read_pickle
 from data import save_txt
+from data import read_txt
 from data import str_of
 
+IF_DEBUG = True
 
 class TopTheme:
     """docstring for TopTheme."""
@@ -18,47 +22,47 @@ class TopTheme:
         self.indexer = 0
         self.phrase_extractor = 0
 
-    def set_language_regonizer(language_regonizer):
+    def set_language_regonizer(self, language_regonizer):
         self.language_regonizer = language_regonizer
 
 
-    def set_sentence_tokenizer(sentence_tokenizer):
+    def set_sentence_tokenizer(self, sentence_tokenizer):
         self.sentence_tokenizer = sentence_tokenizer
 
 
-    def set_theme_cluster(theme_cluster):
+    def set_theme_cluster(self, theme_cluster):
         self.theme_cluster = theme_cluster
 
-    def set_indexer(indexer):
+    def set_indexer(self, indexer):
         self.indexer = indexer
 
-    def set_phrase_extractor(phrase_extractor):
-        self.phrase_extractors = phrase_extractor
+    def set_phrase_extractor(self, phrase_extractor):
+        self.phrase_extractor = phrase_extractor
 
 
-    def build(folder_path):
-        if isinstance(self.language_regonizer, function):
+    def build(self, folder_path):
+        if not isinstance(self.language_regonizer, FunctionType):
             print("ERROR: language_regonizer never setted or type error")
-            pass
-        if isinstance(self.sentence_tokenizer, function):
+            return 0
+        if not isinstance(self.sentence_tokenizer, FunctionType):
             print("ERROR: sentence_tokenizer never setted")
-            pass
-        if isinstance(self.theme_cluster, function):
+            return 0
+        if not isinstance(self.theme_cluster, FunctionType):
             print("ERROR: theme_cluster never setted")
-            pass
-        if isinstance(self.indexer, function):
+            return 0
+        if not isinstance(self.indexer, FunctionType):
             print("ERROR: indexer never setted")
-            pass
-        if isinstance(self.phrase_extractor, function):
+            return 0
+        if not isinstance(self.phrase_extractor, FunctionType):
             print("ERROR: phrase_extractor never setted")
-            pass
+            return 0
 
         sentence_index = -1
         sentences_store = []
         inversed_index = {}
 
         for file_name in os.listdir(folder_path):
-            doc = read_txt(folder_path + file_name)
+            doc = read_txt(folder_path + '/' + file_name)
             print("INFO: reading " + file_name + "to build TopTheme model")
             # spilit doc to paragraphs, suppose single language in one paragraph
             paragraphs = doc.split('\r\n')
@@ -95,5 +99,5 @@ class TopTheme:
                         # index
                         self.indexer(token, sentence_index, inversed_index)
         # persist the index
-        save_pickle(inversed_index)
-        save_txt(str_of(inversed_index))
+        save_pickle(inversed_index, 'out.pickle')
+        save_txt(str_of(inversed_index), 'out.txt')

@@ -11,7 +11,7 @@ def lda_topicn(word_list, num_topics_intial):
     language support: french, english
     :parameter: word list
     :type: str
-     
+
     """
     doc_set = word_list
     tokenizer = RegexpTokenizer(r'\w+')
