@@ -108,6 +108,15 @@ def phrases_extract(text):
     return blob.noun_phrases
 
 
+def em_cluster(centers, matrix):
+    """
+    em algothem to find center
+    """
+    em = nltk.cluster.EMClusterer(initial_means = centers, bias=0.1)
+    em_cluster = em.cluster(matrix)
+    return em_cluster
+
+
 if __name__ == '__main__':
     """
     test function
