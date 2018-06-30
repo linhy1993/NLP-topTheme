@@ -4,7 +4,7 @@ from nltk.corpus import stopwords
 from nltk import sent_tokenize
 from textblob import TextBlob
 
-IF_DEBUG = False
+IF_DEBUG = True
 
 def language_regonize(text):
     """
@@ -108,13 +108,6 @@ def phrases_extract(text):
     return blob.noun_phrases
 
 
-def em_cluster(centers, matrix):
-    """
-    em algothem to find center
-    """
-    em = nltk.cluster.EMClusterer(initial_means = centers, bias=0.1)
-    em_cluster = em.cluster(matrix)
-    return em_cluster
 
 
 if __name__ == '__main__':

@@ -11,9 +11,8 @@ from data import read_pickle
 from data import save_txt
 from data import read_txt
 from data import str_of
-from func import em_cluster
 
-IF_DEBUG = True
+IF_DEBUG = False
 
 class TopTheme:
 
@@ -146,14 +145,9 @@ class TopTheme:
                     matrix.append(temp_vector)
                     word_vec_map[token] = temp_vector
 
-        clustered = self.theme_cluster(num_cluster, matrix, word_vec_map).get('clustered')
-        centers = self.theme_cluster(num_cluster, matrix, word_vec_map).get('centers')
-        # print(centers)
-        #clustered_em = em_cluster(centers, matrix)
-
-        print("======== Kmeans RESULT ========")
-        for r in clustered:
-            print(r)
-            print('\r\n')
-        #print("======== EM RESULT ========")
-        #print(clustered_em)
+        # theme cluster
+        theme_clustered = self.theme_cluster(num_cluster, matrix, word_vec_map)
+        print("========== END ========")
+        for cluster in theme_clustered:
+            print(cluster)
+            print("\n")
