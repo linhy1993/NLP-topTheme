@@ -142,7 +142,7 @@ class TopTheme:
                 print("[INFO] " + token + "is a phrase")
                 p_vector = self.phrase_quantizator(token, self.quantizator)
                 if p_vector is not 0:
-                    matrix.append(temp_vector)
+                    matrix.append(p_vector)
                     word_vec_map[token] = p_vector
 
         clustered = self.theme_cluster(num_cluster, matrix, word_vec_map).get('clustered')

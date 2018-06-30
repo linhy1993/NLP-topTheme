@@ -2,19 +2,19 @@ import numpy as np
 import nltk
 from types import FunctionType
 
-def phrases2vec(phrase, quantizator_func):
-    if not isinstance(quantizator_func, FunctionType):
-        print("ERROR: quantizator_func is not a function object")
-        return 0
-
-    word_lst = nltk.word_tokenize(phrase)
-    vectorSet = []
-    for aword in word_lst:
-        wordVector = quantizator_func(aword)
-        vectorSet.append(wordVector)
-
-    phrases2vec_value = np.divide(vectorSet,len(word_lst))
-    return phrases2vec_value
+# def phrases2vec(phrase, quantizator_func):
+#     if not isinstance(quantizator_func, FunctionType):
+#         print("ERROR: quantizator_func is not a function object")
+#         return 0
+#
+#     word_lst = nltk.word_tokenize(phrase)
+#     vectorSet = []
+#     for aword in word_lst:
+#         wordVector = quantizator_func(aword)
+#         vectorSet.append(wordVector)
+#
+#     phrases2vec_value = np.divide(vectorSet,len(word_lst))
+#     return phrases2vec_value
 
 
 
@@ -27,12 +27,14 @@ def phrases2vec_new(phrase, quantizator_func):
     vector_lst = []
     for word in word_lst:
         word_vec = quantizator_func(word)
+        print(word_vec.shape)
         if len(word_vec) > 0:
             vector_lst.append(word_vec)
             if len(word_vec) is not 300:
                 print("=========BBBB========" + word)
 
     sum_vec = np.sum(vector_lst,axis = 0)
+    print(sum_vec.shape)
     # if len(sum_vec) is not 300:
     #     print("=======JJJJJJJJ========")
 
@@ -40,7 +42,7 @@ def phrases2vec_new(phrase, quantizator_func):
     if len(vector_lst) > 0:
         result = np.divide(sum_vec,len(vector_lst))
         # print(result)
-
+    print(result.shape)
     return result
 
 
