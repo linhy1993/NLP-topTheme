@@ -29,20 +29,14 @@ def phrases2vec_new(phrase, quantizator_func):
         word_vec = quantizator_func(word)
         if len(word_vec) > 0:
             vector_lst.append(word_vec)
-            if len(word_vec) is not 300:
-                print("=========BBBB========" + word)
 
-    sum_vec = np.sum(vector_lst,axis = 0)
-    # if len(sum_vec) is not 300:
-    #     print("=======JJJJJJJJ========")
-
+    sum_vec = np.sum(vector_lst, axis = 0)
     result = 0
+
     if len(vector_lst) > 0:
         result = np.divide(sum_vec,len(vector_lst))
-        # print(result)
 
     return result
-
 
 
 

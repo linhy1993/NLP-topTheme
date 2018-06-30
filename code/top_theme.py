@@ -16,7 +16,6 @@ from func import em_cluster
 IF_DEBUG = True
 
 class TopTheme:
-    """docstring for TopTheme."""
 
     def __init__(self):
         self.language_regonizer = 0
@@ -25,7 +24,7 @@ class TopTheme:
         self.indexer = 0
         self.phrase_extractor = 0
         self.quantizator = 0
-        self.phrase_quantizator=0
+        self.phrase_quantizator = 0
 
     def set_language_regonizer(self, language_regonizer):
         self.language_regonizer = language_regonizer
@@ -77,11 +76,8 @@ class TopTheme:
         punctuations = set(string.punctuation)
         porter_stemmer = PorterStemmer()
 
-        print("================")
-        print(self.quantizator)
-
         for file_name in os.listdir(folder_path):
-            if not file_name.startswith('.'):
+            if not file_name.startswith('.'):   #avoid hidden file
                 doc = read_txt(folder_path + '/' + file_name)
                 print("[INFO] reading " + file_name + " to build model")
                 # spilit doc to paragraphs, suppose single language in one paragraph
@@ -116,11 +112,12 @@ class TopTheme:
                         # stemming - lemmatization - check spell error
                         for t in removed_stopwords:
                             token = porter_stemmer.stem(t)
-                            # index
+                            # index for words
                             self.indexer(token, sentence_index, inversed_index)
-                        # avg, entrphy
-                        for p in phrases:
-                            self.indexer(p, sentence_index, inversed_index)
+                        # index for phrase
+                        for t in phrases:
+                            self.indexer(t, sentence_index, inversed_index)
+
         # persist the index
         save_pickle(inversed_index, 'out/index.pickle')
         save_txt(str_of(inversed_index), 'out/index.txt')
@@ -132,22 +129,26 @@ class TopTheme:
         # list of vector(list)
         matrix = []
         for token in lst_tokens:
-            if ' '  not in token:   #word
-                print("[INFO] " + token + "is a word")
+            if ' '  not in token:   # token is a word
+                if IF_DEBUG:
+                    print("[INFO] " + token + "is a word")
+
                 temp_vector = self.quantizator(token)
                 if len(temp_vector) > 0:
                     matrix.append(temp_vector)
                     word_vec_map[token] = temp_vector
-            else:
-                print("[INFO] " + token + "is a phrase")
-                p_vector = self.phrase_quantizator(token, self.quantizator)
-                if p_vector is not 0:
+            else:   # token is a phrase
+                if IF_DEBUG:
+                    print("[INFO] " + token + "is a phrase")
+
+                temp_vector = self.phrase_quantizator(token, self.quantizator)
+                if temp_vector is not 0:
                     matrix.append(temp_vector)
-                    word_vec_map[token] = p_vector
+                    word_vec_map[token] = temp_vector
 
         clustered = self.theme_cluster(num_cluster, matrix, word_vec_map).get('clustered')
         centers = self.theme_cluster(num_cluster, matrix, word_vec_map).get('centers')
-        print(centers)
+        # print(centers)
         #clustered_em = em_cluster(centers, matrix)
 
         print("======== Kmeans RESULT ========")
