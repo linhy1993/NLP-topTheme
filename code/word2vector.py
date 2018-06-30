@@ -16,6 +16,8 @@ def word2vector(word):
     word_vec = []
     try:
         word_vec = model.wv[word]
+        if len(word_vec) is not 300:
+            print("=======AAAAA=========")
     except KeyError:
         print("[WARNING] fail to obtain vector of (" + word + "), not found in vocabulary")
     return word_vec

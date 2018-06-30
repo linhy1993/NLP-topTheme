@@ -1,24 +1,50 @@
 import numpy as np
 import nltk
-import gensim
-import re
-from stop_words import get_stop_words
-import nltk
-import scipy as sc
-import numpy as np
-model = gensim.models.KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', binary=True)
+from types import FunctionType
 
+def phrases2vec(phrase, quantizator_func):
+    if not isinstance(quantizator_func, FunctionType):
+        print("ERROR: quantizator_func is not a function object")
+        return 0
 
-def phrases2vec(phrases):
+    word_lst = nltk.word_tokenize(phrase)
     vectorSet = []
-    for aword in phrases:
-        try:
-            wordVector = model.wv[aword]
-            vectorSet.append(wordVector)
-        except:
-            pass
-    phrases2vec_value = np.divide(vectorSet,len(phrases))
+    for aword in word_lst:
+        wordVector = quantizator_func(aword)
+        vectorSet.append(wordVector)
+
+    phrases2vec_value = np.divide(vectorSet,len(word_lst))
     return phrases2vec_value
+
+
+
+def phrases2vec_new(phrase, quantizator_func):
+    if not isinstance(quantizator_func, FunctionType):
+        print("ERROR: quantizator_func is not a function object")
+        return 0
+
+    word_lst = nltk.word_tokenize(phrase)
+    vector_lst = []
+    for word in word_lst:
+        word_vec = quantizator_func(word)
+        if len(word_vec) > 0:
+            vector_lst.append(word_vec)
+            if len(word_vec) is not 300:
+                print("=========BBBB========" + word)
+
+    sum_vec = np.sum(vector_lst,axis = 0)
+    # if len(sum_vec) is not 300:
+    #     print("=======JJJJJJJJ========")
+
+    result = 0
+    if len(vector_lst) > 0:
+        result = np.divide(sum_vec,len(vector_lst))
+        # print(result)
+
+    return result
+
+
+
 
 if __name__ == '__main__':
     phrases_vec = phrases2vec(['hello','good'])

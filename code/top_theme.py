@@ -25,6 +25,7 @@ class TopTheme:
         self.indexer = 0
         self.phrase_extractor = 0
         self.quantizator = 0
+        self.phrase_quantizator=0
 
     def set_language_regonizer(self, language_regonizer):
         self.language_regonizer = language_regonizer
@@ -43,6 +44,9 @@ class TopTheme:
 
     def set_quantizator(self, quantizator):
         self.quantizator = quantizator
+
+    def set_phrase_quantizator(self, phrase_quantizator):
+        self.phrase_quantizator = phrase_quantizator
 
     def build(self, folder_path, num_cluster):
         if not isinstance(self.language_regonizer, FunctionType):
@@ -63,12 +67,18 @@ class TopTheme:
         if not isinstance(self.quantizator, FunctionType):
             print("ERROR: quantizator never setted")
             return 0
+        if not isinstance(self.phrase_quantizator, FunctionType):
+            print("ERROR: phrase_quantizator never setted")
+            return 0
 
         sentence_index = -1
         sentences_store = []
         inversed_index = {}
         punctuations = set(string.punctuation)
         porter_stemmer = PorterStemmer()
+
+        print("================")
+        print(self.quantizator)
 
         for file_name in os.listdir(folder_path):
             if not file_name.startswith('.'):
@@ -109,8 +119,8 @@ class TopTheme:
                             # index
                             self.indexer(token, sentence_index, inversed_index)
                         # avg, entrphy
-                        # for p in phrases:
-                        #     self.indexer(p, sentence_index, inversed_index)
+                        for p in phrases:
+                            self.indexer(p, sentence_index, inversed_index)
         # persist the index
         save_pickle(inversed_index, 'out/index.pickle')
         save_txt(str_of(inversed_index), 'out/index.txt')
@@ -122,10 +132,18 @@ class TopTheme:
         # list of vector(list)
         matrix = []
         for token in lst_tokens:
-            temp_vector = self.quantizator(token)
-            if len(temp_vector) > 0:
-                matrix.append(temp_vector)
-                word_vec_map[token] = temp_vector
+            if ' '  not in token:   #word
+                print("[INFO] " + token + "is a word")
+                temp_vector = self.quantizator(token)
+                if len(temp_vector) > 0:
+                    matrix.append(temp_vector)
+                    word_vec_map[token] = temp_vector
+            else:
+                print("[INFO] " + token + "is a phrase")
+                p_vector = self.phrase_quantizator(token, self.quantizator)
+                if p_vector is not 0:
+                    matrix.append(temp_vector)
+                    word_vec_map[token] = p_vector
 
         clustered = self.theme_cluster(num_cluster, matrix, word_vec_map).get('clustered')
         centers = self.theme_cluster(num_cluster, matrix, word_vec_map).get('centers')
