@@ -11,6 +11,7 @@ from data import read_pickle
 from data import save_txt
 from data import read_txt
 from data import str_of
+from func import em_cluster
 
 IF_DEBUG = True
 
@@ -23,14 +24,14 @@ class TopTheme:
         self.theme_cluster = 0
         self.indexer = 0
         self.phrase_extractor = 0
+        self.quantizator = 0
+        self.phrase_quantizator=0
 
     def set_language_regonizer(self, language_regonizer):
         self.language_regonizer = language_regonizer
 
-
     def set_sentence_tokenizer(self, sentence_tokenizer):
         self.sentence_tokenizer = sentence_tokenizer
-
 
     def set_theme_cluster(self, theme_cluster):
         self.theme_cluster = theme_cluster
@@ -41,7 +42,13 @@ class TopTheme:
     def set_phrase_extractor(self, phrase_extractor):
         self.phrase_extractor = phrase_extractor
 
-    def build(self, folder_path):
+    def set_quantizator(self, quantizator):
+        self.quantizator = quantizator
+
+    def set_phrase_quantizator(self, phrase_quantizator):
+        self.phrase_quantizator = phrase_quantizator
+
+    def build(self, folder_path, num_cluster):
         if not isinstance(self.language_regonizer, FunctionType):
             print("ERROR: language_regonizer never setted or type error")
             return 0
@@ -57,12 +64,21 @@ class TopTheme:
         if not isinstance(self.phrase_extractor, FunctionType):
             print("ERROR: phrase_extractor never setted")
             return 0
+        if not isinstance(self.quantizator, FunctionType):
+            print("ERROR: quantizator never setted")
+            return 0
+        if not isinstance(self.phrase_quantizator, FunctionType):
+            print("ERROR: phrase_quantizator never setted")
+            return 0
 
         sentence_index = -1
         sentences_store = []
         inversed_index = {}
         punctuations = set(string.punctuation)
         porter_stemmer = PorterStemmer()
+
+        print("================")
+        print(self.quantizator)
 
         for file_name in os.listdir(folder_path):
             if not file_name.startswith('.'):
@@ -97,11 +113,46 @@ class TopTheme:
                         word_tokens = nltk.word_tokenize(removed_digit)
                         # filter stop words
                         removed_stopwords = [t for t in word_tokens if t not in stopwords.words(language)]
-                        # stemming
+                        # stemming - lemmatization - check spell error
                         for t in removed_stopwords:
                             token = porter_stemmer.stem(t)
                             # index
                             self.indexer(token, sentence_index, inversed_index)
+                        # avg, entrphy
+                        for p in phrases:
+                            self.indexer(p, sentence_index, inversed_index)
         # persist the index
         save_pickle(inversed_index, 'out/index.pickle')
         save_txt(str_of(inversed_index), 'out/index.txt')
+
+        # get all tokens
+        lst_tokens = list(inversed_index.keys())
+        # a hashmap to quick match between word and vec
+        word_vec_map = {}
+        # list of vector(list)
+        matrix = []
+        for token in lst_tokens:
+            if ' '  not in token:   #word
+                print("[INFO] " + token + "is a word")
+                temp_vector = self.quantizator(token)
+                if len(temp_vector) > 0:
+                    matrix.append(temp_vector)
+                    word_vec_map[token] = temp_vector
+            else:
+                print("[INFO] " + token + "is a phrase")
+                p_vector = self.phrase_quantizator(token, self.quantizator)
+                if p_vector is not 0:
+                    matrix.append(temp_vector)
+                    word_vec_map[token] = p_vector
+
+        clustered = self.theme_cluster(num_cluster, matrix, word_vec_map).get('clustered')
+        centers = self.theme_cluster(num_cluster, matrix, word_vec_map).get('centers')
+        print(centers)
+        #clustered_em = em_cluster(centers, matrix)
+
+        print("======== Kmeans RESULT ========")
+        for r in clustered:
+            print(r)
+            print('\r\n')
+        #print("======== EM RESULT ========")
+        #print(clustered_em)
