@@ -16,15 +16,15 @@ def word2vector(word):
     word_vec = []
     try:
         word_vec = model.wv[word]
-        if len(word_vec) is not 300:
-            print(word_vec.shape)
-            print("=======AAAAA=========")
+
     except KeyError:
         print("[WARNING] fail to obtain vector of (" + word + "), not found in vocabulary")
     return word_vec
 
-
 if __name__ == '__main__':
-    words_list = ['team', 'collaborative', 'sti', 'request', 'many', 'departments', 'CDPQ', 'still', 'tackle', 'professionally']
+    words_list = ['personal', 'important']
     for w in words_list:
-        print(word2vector(w))
+        print("----- " + w +" -----")
+        vec = word2vector(w)
+        print(vec)
+        print("len of vector:" + str(len(vec)))

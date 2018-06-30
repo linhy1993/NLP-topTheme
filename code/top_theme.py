@@ -5,18 +5,19 @@ import nltk
 import string
 from types import FunctionType
 from nltk.stem.porter import PorterStemmer
+from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from data import save_pickle
 from data import read_pickle
 from data import save_txt
 from data import read_txt
 from data import str_of
-from func import em_cluster
+from func import pos_word
+import time
 
-IF_DEBUG = True
+IF_DEBUG = False
 
 class TopTheme:
-    """docstring for TopTheme."""
 
     def __init__(self):
         self.language_regonizer = 0
@@ -25,7 +26,7 @@ class TopTheme:
         self.indexer = 0
         self.phrase_extractor = 0
         self.quantizator = 0
-        self.phrase_quantizator=0
+        self.phrase_quantizator = 0
 
     def set_language_regonizer(self, language_regonizer):
         self.language_regonizer = language_regonizer
@@ -49,6 +50,7 @@ class TopTheme:
         self.phrase_quantizator = phrase_quantizator
 
     def build(self, folder_path, num_cluster):
+        start_time = time.clock()
         if not isinstance(self.language_regonizer, FunctionType):
             print("ERROR: language_regonizer never setted or type error")
             return 0
@@ -76,12 +78,10 @@ class TopTheme:
         inversed_index = {}
         punctuations = set(string.punctuation)
         porter_stemmer = PorterStemmer()
-
-        print("================")
-        print(self.quantizator)
+        lemmatizer = WordNetLemmatizer()
 
         for file_name in os.listdir(folder_path):
-            if not file_name.startswith('.'):
+            if not file_name.startswith('.'):   #avoid hidden file
                 doc = read_txt(folder_path + '/' + file_name)
                 print("[INFO] reading " + file_name + " to build model")
                 # spilit doc to paragraphs, suppose single language in one paragraph
@@ -113,14 +113,18 @@ class TopTheme:
                         word_tokens = nltk.word_tokenize(removed_digit)
                         # filter stop words
                         removed_stopwords = [t for t in word_tokens if t not in stopwords.words(language)]
-                        # stemming - lemmatization - check spell error
+                        # stemming or lemmatization
                         for t in removed_stopwords:
-                            token = porter_stemmer.stem(t)
-                            # index
-                            self.indexer(token, sentence_index, inversed_index)
-                        # avg, entrphy
-                        for p in phrases:
-                            self.indexer(p, sentence_index, inversed_index)
+                            # token = porter_stemmer.stem(t)
+                            pos_token = pos_word(t)
+                            if pos_token is not 0:
+                                token = lemmatizer.lemmatize(t, pos=pos_token)
+                                # index for words
+                                self.indexer(token, sentence_index, inversed_index)
+                        # index for phrase
+                        for t in phrases:
+                            self.indexer(t, sentence_index, inversed_index)
+
         # persist the index
         save_pickle(inversed_index, 'out/index.pickle')
         save_txt(str_of(inversed_index), 'out/index.txt')
@@ -132,27 +136,29 @@ class TopTheme:
         # list of vector(list)
         matrix = []
         for token in lst_tokens:
-            if ' '  not in token:   #word
-                print("[INFO] " + token + "is a word")
+            if ' '  not in token:   # token is a word
+                if IF_DEBUG:
+                    print("[INFO] " + token + "is a word")
+
                 temp_vector = self.quantizator(token)
                 if len(temp_vector) > 0:
                     matrix.append(temp_vector)
                     word_vec_map[token] = temp_vector
-            else:
-                print("[INFO] " + token + "is a phrase")
-                p_vector = self.phrase_quantizator(token, self.quantizator)
-                if p_vector is not 0:
-                    matrix.append(p_vector)
-                    word_vec_map[token] = p_vector
 
-        clustered = self.theme_cluster(num_cluster, matrix, word_vec_map).get('clustered')
-        centers = self.theme_cluster(num_cluster, matrix, word_vec_map).get('centers')
-        print(centers)
-        #clustered_em = em_cluster(centers, matrix)
+            else:   # token is a phrase
+                if IF_DEBUG:
+                    print("[INFO] " + token + "is a phrase")
 
-        print("======== Kmeans RESULT ========")
-        for r in clustered:
-            print(r)
-            print('\r\n')
-        #print("======== EM RESULT ========")
-        #print(clustered_em)
+                temp_vector = self.phrase_quantizator(token, self.quantizator)
+                if temp_vector is not 0:
+                    matrix.append(temp_vector)
+                    word_vec_map[token] = temp_vector
+
+        # theme cluster
+        theme_clustered = self.theme_cluster(num_cluster, matrix, word_vec_map)
+        elapsed = (time.clock() - start_time)
+        print("========== END ========")
+        for cluster in theme_clustered:
+            print(cluster)
+            print("\n")
+        print("RUNNING TIME:" + str(elapsed) + " sec" )
