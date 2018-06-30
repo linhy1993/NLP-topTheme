@@ -1,5 +1,6 @@
 import nltk
 from nltk import wordpunct_tokenize
+from nltk.tag import pos_tag
 from nltk.corpus import stopwords
 from nltk import sent_tokenize
 from textblob import TextBlob
@@ -79,17 +80,7 @@ def indexer(token, sentence_id, index_container):
     if IF_DEBUG:
         print("[INFO] finish doing indexer")
 
-def theme_cluster(words_arr):
-    """
-    language supported : english, french
-    :param words_arr:
-    :type words_arr: array of str
-    """
-    if IF_DEBUG:
-        print("[INFO] start doing theme_cluster")
-    if IF_DEBUG:
-        print("[INFO] finish doing theme_cluster")
-    return words_arrs
+
 
 def phrases_extract(text):
     """
@@ -108,6 +99,22 @@ def phrases_extract(text):
     return blob.noun_phrases
 
 
+def pos_word(word):
+    input_lst = []
+    input_lst.append(word)
+    part_of_speech = pos_tag(input_lst)[0][1]
+    pos = 0
+    if part_of_speech.startswith('V'):
+        pos = 'v'
+    elif part_of_speech.startswith('N'):
+        pos = 'n'
+    elif part_of_speech is 'ADJ':
+        pos = 'a'
+    elif part_of_speech is 'ADV':
+        pos = 'r'
+    else:
+        print("[WARNING] pos of the word is not in (v,n,adj,adv)")
+    return pos
 
 
 if __name__ == '__main__':

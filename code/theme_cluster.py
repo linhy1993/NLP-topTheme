@@ -1,13 +1,14 @@
 import nltk
 import word2vector
 from data import str_of
+from nltk.stem import WordNetLemmatizer
 
 IF_DEBUG = True
 
 def kmeans_em(num_cluster, word_matrix, word_vec_map):
     kmeans_clustered = kmeans(num_cluster, word_matrix, word_vec_map)
     if IF_DEBUG:
-        result_kmeans = kmeas_clustered.get('clusters')
+        result_kmeans = kmeans_clustered.get('clusters')
         print("[INFO]------ Result of Kmeans -------")
         for r in result_kmeans:
             print(r)
@@ -23,7 +24,7 @@ def kmeans_em(num_cluster, word_matrix, word_vec_map):
 
 def kmeans(number_means, matrix, word_vec_map):
     if IF_DEBUG:
-        print("[INFO] start doing Kmeans clustering")
+        print("[INFO] start doing Kmeans clustering...")
     km = nltk.cluster.KMeansClusterer(num_means=number_means, distance=nltk.cluster.util.euclidean_distance)
     km.cluster(matrix)
 
@@ -46,7 +47,7 @@ def kmeans(number_means, matrix, word_vec_map):
 
 def em_cluster(centers, matrix, word_vec_map):
     if IF_DEBUG:
-        print("[INFO] start doing EM clustering")
+        print("[INFO] start doing EM clustering...")
     em = nltk.cluster.EMClusterer(initial_means = centers, bias=0.1)
     em.cluster(matrix)
 

@@ -5,12 +5,15 @@ import nltk
 import string
 from types import FunctionType
 from nltk.stem.porter import PorterStemmer
+from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from data import save_pickle
 from data import read_pickle
 from data import save_txt
 from data import read_txt
 from data import str_of
+from func import pos_word
+import time
 
 IF_DEBUG = False
 
@@ -47,6 +50,7 @@ class TopTheme:
         self.phrase_quantizator = phrase_quantizator
 
     def build(self, folder_path, num_cluster):
+        start_time = time.clock()
         if not isinstance(self.language_regonizer, FunctionType):
             print("ERROR: language_regonizer never setted or type error")
             return 0
@@ -74,6 +78,7 @@ class TopTheme:
         inversed_index = {}
         punctuations = set(string.punctuation)
         porter_stemmer = PorterStemmer()
+        lemmatizer = WordNetLemmatizer()
 
         for file_name in os.listdir(folder_path):
             if not file_name.startswith('.'):   #avoid hidden file
@@ -108,11 +113,14 @@ class TopTheme:
                         word_tokens = nltk.word_tokenize(removed_digit)
                         # filter stop words
                         removed_stopwords = [t for t in word_tokens if t not in stopwords.words(language)]
-                        # stemming - lemmatization - check spell error
+                        # stemming or lemmatization
                         for t in removed_stopwords:
-                            token = porter_stemmer.stem(t)
-                            # index for words
-                            self.indexer(token, sentence_index, inversed_index)
+                            # token = porter_stemmer.stem(t)
+                            pos_token = pos_word(t)
+                            if pos_token is not 0:
+                                token = lemmatizer.lemmatize(t, pos=pos_token)
+                                # index for words
+                                self.indexer(token, sentence_index, inversed_index)
                         # index for phrase
                         for t in phrases:
                             self.indexer(t, sentence_index, inversed_index)
@@ -147,7 +155,9 @@ class TopTheme:
 
         # theme cluster
         theme_clustered = self.theme_cluster(num_cluster, matrix, word_vec_map)
+        elapsed = (time.clock() - start_time)
         print("========== END ========")
         for cluster in theme_clustered:
             print(cluster)
             print("\n")
+        print("RUNNING TIME:" + str(elapsed) + " sec" )
