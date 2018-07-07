@@ -21,6 +21,23 @@ def word2vector(word):
         print("[WARNING] fail to obtain vector of (" + word + "), not found in vocabulary")
     return word_vec
 
+def TwoWordsSimilarity(wordlist1, wordlist2):
+    """
+    compare two words similarity
+    
+    :param wordlist1: clustered word
+    :param wordlist2: question word
+    :return: similarity, value from 0 to 1
+    :type: float
+    """
+    word_similarity = model.similarity('woman', 'man')
+    return word_similarity
+
+
+
+
+
+
 if __name__ == '__main__':
     words_list = ['personal', 'important']
     for w in words_list:

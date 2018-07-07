@@ -1,13 +1,13 @@
-from nltk.stem import WordNetLemmatizer
-from nltk.tag import pos_tag
-from nltk.tokenize import word_tokenize
+
+import gensim
+
+print("[INFO] word2vec model is loading ...")
+model = gensim.models.KeyedVectors.load_word2vec_format('word2vec_model.bin', binary=True)
+print("[INFO] word2vec model has been loaded.")
 
 
-wnl = WordNetLemmatizer()
+b = ['word']
+c = ['sentence']
+a = model.similarity(b[0], c[0])
 
-word_tokened = word_tokenize('He')
-
-pos = pos_tag(["he"])
-print(pos[0][1])
-# for word in word_tokened:
-#     print(wnl.lemmatize(word, pos='n'))
+print(a)

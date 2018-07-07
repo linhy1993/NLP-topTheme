@@ -155,7 +155,7 @@ class TopTheme:
                     word_vec_map[token] = temp_vector
 
         # theme cluster
-        theme_clustered = self.theme_cluster(num_cluster, matrix, word_vec_map)
+        theme_clustered = self.theme_cluster(num_cluster, matrix, list(word_vec_map.keys()))
         elapsed = (time.clock() - start_time)
         print("========== END ========")
         for cluster in theme_clustered:
