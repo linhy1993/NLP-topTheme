@@ -21,7 +21,7 @@ def word2vector(word):
         print("[WARNING] fail to obtain vector of (" + word + "), not found in vocabulary")
     return word_vec
 
-def TwoWordsSimilarity(wordlist1, wordlist2):
+def TwoWordsSimilarity(word1, word2):
     """
     compare two words similarity
     
@@ -30,7 +30,7 @@ def TwoWordsSimilarity(wordlist1, wordlist2):
     :return: similarity, value from 0 to 1
     :type: float
     """
-    word_similarity = model.similarity('woman', 'man')
+    word_similarity = model.similarity(word1, word2)
     return word_similarity
 
 

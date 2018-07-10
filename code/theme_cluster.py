@@ -9,8 +9,9 @@ from sklearn.metrics import silhouette_score
 import numpy as np
 from sklearn.decomposition import PCA
 from func import language_regonize
-from repo import insert_dic
+from repo import insert
 
+version = 0.2
 IF_DEBUG = True
 
 def kmeans(number_means, matrix, word_list, get_word_vec):
@@ -44,34 +45,11 @@ def kmeans(number_means, matrix, word_list, get_word_vec):
     # print(bestK)
 
     ###################存进数据库#####################
-    bestK_sc_dic = {}
-    bestK_mean_dic = {}
-    for i in range(3, number_means):
-        bestK_sc_dic[str(i)] = sc_scores[i - 3]
-        bestK_mean_dic[str(i)] = meandistortions[i - 3]
-
-    list_sc_scores =[]
-    for key, val in bestK_sc_dic.items():
-        entry = {}
-        entry["K value"] = int(key)
-        entry["sc scores"] = val
-        list_sc_scores.append(entry)
-    dic_sc_scores = {"_id":"sc_scores"}
-    dic_sc_scores["data"] = list_sc_scores
-    insert_dic(dic_sc_scores)
-    print("#######insert sc scores into db########")
-
-    list_mean_value =[]
-    for key, val in bestK_mean_dic.items():
-        entry_mean = {}
-        entry_mean["K value"] = int(key)
-        entry_mean["mean value"] = val
-        list_mean_value.append(entry_mean)
-    dic_mean_value = {"_id":"mean_value"}
-    dic_mean_value["data"] = list_mean_value
-    insert_dic(dic_mean_value)
-    print("#######insert mean value into db#######")
-
+    for i in K:
+        input_cluster_analysis = {"_id": "K value is "+str(i)+"@"+ str(version) }
+        input_cluster_analysis["elbow value"] = meandistortions[i - 3]
+        input_cluster_analysis["sc scores"] = sc_scores[i - 3]
+        insert("cluster_analysis", input_cluster_analysis)
 
     plt.figure(1)
     km_2d = KMeans(n_clusters= bestK, algorithm="full").fit(reduce_word_vec)
@@ -115,29 +93,23 @@ def kmeans(number_means, matrix, word_list, get_word_vec):
                 nearest_word[i] = w
             else:
                 tempValue = tempValue
-    # print('########################')
-    # print(nearest_word)
 
     return_data = {}
     return_data['clusters'] = result
     return_data['centers'] = km_2d.cluster_centers_
-    return_data['near_word'] = nearest_word
+    return_data['representative'] = nearest_word
 
     ########save theme#######
-    list_theme = []
     for i in range(0, bestK):
-        theme_db = {}
-        theme_db["theme"] = nearest_word[i]
-        theme_db["content"] = result[i]
-        list_theme.append(theme_db)
-    dic_theme_cluster = {"_id":"theme_cluster"}
-    dic_theme_cluster["data"] = list_theme
-    insert_dic(dic_theme_cluster)
+        input_theme = {"_id": "theme"+str(i)+"@"+ str(version) }
+        input_theme["themes"] = nearest_word[i]
+        input_theme["tokens"] = result[i]
+        insert("themes",input_theme)
 
     return return_data
 
-def calculate_distance(word1, center):
-    distance = np.sqrt(np.sum(np.square(word1 - center)))
+def calculate_distance(word1, word2):
+    distance = np.sqrt(np.sum(np.square(word1 - word2)))
     return distance
 
 

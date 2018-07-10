@@ -16,11 +16,14 @@ from func import pos_word
 from french_lefff_lemmatizer.french_lefff_lemmatizer import FrenchLefffLemmatizer
 import time
 from googletrans import Translator
-import repo
+from theme_cluster import calculate_distance
+from repo import insert
+
 
 
 
 IF_DEBUG = False
+version = 0.2
 
 class TopTheme:
 
@@ -145,12 +148,19 @@ class TopTheme:
 
         save_pickle(inversed_index_fr, 'out/index_fr.pickle')
         save_txt(str_of(inversed_index_fr), 'out/index_fr.txt')
+        index = 0
+        for i in range(0,len(sentences_store)):
+            input_sentence={"_id":str(index)+ '@' + str(version)}
+            index = index + 1
+            input_sentence["content"] = sentences_store[i]
+            sentences_store[i] = input_sentence
+            insert("corpus",sentences_store[i])
 
         # get all tokens
         lst_tokens = list(inversed_index.keys())
         lst_tokens_fr = list(inversed_index_fr.keys())
         # a hashmap to quick match between word and vec
-        word_vec_map = {}
+        self.word_vec_map = {}
         # list of vector(list)
         matrix = []
         for token in lst_tokens:
@@ -161,7 +171,7 @@ class TopTheme:
                 temp_vector = self.quantizator(token)
                 if len(temp_vector) > 0:
                     matrix.append(temp_vector)
-                    word_vec_map[token] = temp_vector
+                    self.word_vec_map[token] = temp_vector
 
             else:   # token is a phrase
                 if IF_DEBUG:
@@ -170,47 +180,80 @@ class TopTheme:
                 temp_vector = self.phrase_quantizator(token, self.quantizator)
                 if temp_vector is not 0:
                     matrix.append(temp_vector)
-                    word_vec_map[token] = temp_vector
+                    self.word_vec_map[token] = temp_vector
 
         for token in lst_tokens_fr:
             if ' ' not in token:
                 after_trans = translator.translate(token, dest='en')
-                print(after_trans.text)
+                # print(after_trans.text)
                 ####tanslate to engish after_tran
                 temp_vector = self.quantizator(after_trans.text)
                 if len(temp_vector) > 0:
                     matrix.append(temp_vector)
-                    word_vec_map[token] = temp_vector
+                    self.word_vec_map[token] = temp_vector
             else:
                 ####translate to english
                 after_trans = translator.translate(token, dest='en')
                 temp_vector = self.phrase_quantizator(after_trans.text, self.quantizator)
                 if temp_vector is not 0:
                     matrix.append(temp_vector)
-                    word_vec_map[token] = temp_vector
-
-
-
+                    self.word_vec_map[token] = temp_vector
 
         # theme cluster
-        theme_clustered = self.theme_cluster(num_cluster, matrix, list(word_vec_map.keys()), word_vec_map)
-        ###########存进数据库里 theme cluster###############
-        ###
-
-        ###################################################
+        self.theme_clustered = self.theme_cluster(num_cluster, matrix, list(self.word_vec_map.keys()), self.word_vec_map)
         elapsed = (time.clock() - start_time)
         print("========== END ========")
-        print(theme_clustered['clusters'])
+        print(self.theme_clustered['clusters'])
         print("\n")
 
-        print(theme_clustered['centers'])
+        print(self.theme_clustered['centers'])
         print('\n')
 
-        print(theme_clustered['near_word'])
+        print(self.theme_clustered['representative'])
         print('\n')
         print("RUNNING TIME:" + str(elapsed) + " sec" )
 
     def query(self, question):
+        punctuations = set(string.punctuation)
 
-        print(question)
+        language = self.language_regonizer(question)
+        question = question.lower()
 
+        removed_punc = ''.join(s for s in question if s not in punctuations)
+        # remove all digits
+        removed_digit = re.sub(r'\d+', '', removed_punc)
+        word_tokens = nltk.word_tokenize(removed_digit)
+        question_removed_stopwords = [t for t in word_tokens if t not in stopwords.words(language)]
+        question_removed_vec = self.quantizator(question_removed_stopwords)
+
+
+        value = []
+        output = []
+        word_list = self.theme_clustered['clusters']
+        similarity_container = []
+        for iquery in range(0, len(question_removed_stopwords)):
+            for itheme in range(0, len(word_list)):
+                similarity = 0
+                for w in word_list[itheme]:
+                    temp = calculate_distance(self.word_vec_map.get(w),question_removed_vec[iquery])
+                    similarity = similarity + temp
+                mean_similarity = similarity / len(word_list[itheme])
+                entry = []
+                entry.append(itheme)
+                entry.append(iquery)
+                entry.append(mean_similarity)
+                similarity_container.append(entry)
+        print(similarity_container)
+        ##############db
+        dict_input = {}
+        dict_input["question"] = question
+        dict_input["query tokens"] = question_removed_stopwords
+        dict_input["themes"] = self.theme_clustered['representative']
+        dict_input["similarity"] = similarity_container
+        insert("queries",dict_input)
+        print("Finish input DB")
+
+
+
+
+        return similarity_container
