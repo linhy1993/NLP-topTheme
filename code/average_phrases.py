@@ -27,7 +27,6 @@ def phrases2vec_new(phrase, quantizator_func):
     vector_lst = []
     for word in word_lst:
         word_vec = quantizator_func(word)
-        print(word_vec.shape)
         if len(word_vec) > 0:
             vector_lst.append(word_vec)
 

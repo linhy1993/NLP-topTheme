@@ -37,7 +37,6 @@ def TwoWordsSimilarity(wordlist1, wordlist2):
 
 
 
-
 if __name__ == '__main__':
     words_list = ['personal', 'important']
     for w in words_list:

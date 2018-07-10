@@ -13,7 +13,12 @@ from data import save_txt
 from data import read_txt
 from data import str_of
 from func import pos_word
+from french_lefff_lemmatizer.french_lefff_lemmatizer import FrenchLefffLemmatizer
 import time
+from googletrans import Translator
+import repo
+
+
 
 IF_DEBUG = False
 
@@ -76,20 +81,21 @@ class TopTheme:
         sentence_index = -1
         sentences_store = []
         inversed_index = {}
+        inversed_index_fr = {}
         punctuations = set(string.punctuation)
         porter_stemmer = PorterStemmer()
         lemmatizer = WordNetLemmatizer()
+        fr_lemmatizer = FrenchLefffLemmatizer()
+        translator = Translator()
 
         for file_name in os.listdir(folder_path):
             if not file_name.startswith('.'):   #avoid hidden file
                 doc = read_txt(folder_path + '/' + file_name)
                 print("[INFO] reading " + file_name + " to build model")
                 # spilit doc to paragraphs, suppose single language in one paragraph
-                paragraphs = doc.split('\r\n')
+                paragraphs = doc.split('\n')
                 for parag in paragraphs:
                     language = self.language_regonizer(parag)
-                    if(language == 'french'):
-                        continue
                     # sentence tokenize
                     lst_sentence = self.sentence_tokenizer(parag, language)
                     # save original sentence to memory
@@ -115,22 +121,34 @@ class TopTheme:
                         removed_stopwords = [t for t in word_tokens if t not in stopwords.words(language)]
                         # stemming or lemmatization
                         for t in removed_stopwords:
-                            # token = porter_stemmer.stem(t)
-                            pos_token = pos_word(t)
-                            if pos_token is not 0:
-                                token = lemmatizer.lemmatize(t, pos=pos_token)
-                                # index for words
-                                self.indexer(token, sentence_index, inversed_index)
+                            if language == 'english':
+                                # token = porter_stemmer.stem(t)
+                                pos_token = pos_word(t)
+                                if pos_token is not 0:
+                                    token = lemmatizer.lemmatize(t, pos=pos_token)
+                                    self.indexer(token, sentence_index, inversed_index)
+                            elif language == 'french':
+                                token = fr_lemmatizer.lemmatize(t)
+                            # index for words
+                                self.indexer(token, sentence_index, inversed_index_fr)
                         # index for phrase
                         for t in phrases:
-                            self.indexer(t, sentence_index, inversed_index)
+                            if language == 'english':
+                                self.indexer(t, sentence_index, inversed_index)
+                            elif language == 'french':
+                                self.indexer(t, sentence_index, inversed_index_fr)
+
 
         # persist the index
         save_pickle(inversed_index, 'out/index.pickle')
         save_txt(str_of(inversed_index), 'out/index.txt')
 
+        save_pickle(inversed_index_fr, 'out/index_fr.pickle')
+        save_txt(str_of(inversed_index_fr), 'out/index_fr.txt')
+
         # get all tokens
         lst_tokens = list(inversed_index.keys())
+        lst_tokens_fr = list(inversed_index_fr.keys())
         # a hashmap to quick match between word and vec
         word_vec_map = {}
         # list of vector(list)
@@ -154,8 +172,28 @@ class TopTheme:
                     matrix.append(temp_vector)
                     word_vec_map[token] = temp_vector
 
+        for token in lst_tokens_fr:
+            if ' ' not in token:
+                after_trans = translator.translate(token, dest='en')
+                ####tanslate to engish after_tran
+                temp_vector = self.quantizator(after_trans.text)
+                if len(temp_vector) > 0:
+                    matrix.append(temp_vector)
+                    word_vec_map[token] = temp_vector
+            else:
+                ####translate to english
+                after_trans = translator.translate(token, dest='en')
+                temp_vector = self.phrase_quantizator(after_trans.text, self.quantizator)
+                if temp_vector is not 0:
+                    matrix.append(temp_vector)
+                    word_vec_map[token] = temp_vector
+
         # theme cluster
         theme_clustered = self.theme_cluster(num_cluster, matrix, list(word_vec_map.keys()))
+        ###########存进数据库里 theme cluster###############
+
+
+        ###################################################
         elapsed = (time.clock() - start_time)
         print("========== END ========")
         for cluster in theme_clustered:

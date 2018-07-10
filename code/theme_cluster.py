@@ -12,23 +12,6 @@ from sklearn.decomposition import PCA
 
 
 IF_DEBUG = True
-#
-# def kmeans_em(num_cluster, word_matrix, word_vec_map):
-#     kmeans_clustered = kmeans(num_cluster, word_matrix, word_vec_map)
-#     if IF_DEBUG:
-#         result_kmeans = kmeans_clustered.get('clusters')
-#         print("[INFO]------ Result of Kmeans -------")
-#         for r in result_kmeans:
-#             print(r)
-#             print('\n')
-#         print("-------------------------------------")
-#
-#     centers = kmeans_clustered.get("centers")
-#
-#     # em_clustered = em_cluster(centers, word_matrix, word_vec_map)
-#
-#     return result_kmeans
-
 
 def kmeans(number_means, matrix, word_list):
     if IF_DEBUG:
@@ -53,17 +36,19 @@ def kmeans(number_means, matrix, word_list):
 
     bestK = np.argmax(sc_scores) + 3
     # print(bestK)
-
+    ###################存进数据库#####################
     plt.figure(1)
     km_2d = KMeans(n_clusters= bestK, algorithm="full").fit(reduce_word_vec)
     y_kmeans = km_2d.predict(reduce_word_vec)
     plt.scatter(reduce_word_vec[:,0], reduce_word_vec[:,1], c=y_kmeans,cmap='rainbow')
+    ###################存进数据库#####################
 
     plt.figure(2)
     plt.plot(K, meandistortions, 'bx-')
     plt.xlabel('k')
     plt.ylabel('Distotion')
     plt.title('The Elobow Method showing the optimal k')
+    ###################存进数据库#####################
 
     plt.figure(3)
     plt.plot(K, sc_scores, '*-')
@@ -87,70 +72,3 @@ def kmeans(number_means, matrix, word_list):
     return_data['centers'] = km_2d.cluster_centers_
     print(return_data)
     return return_data
-
-    # for i in range(0, number_means):
-    #     temp = []
-    #     result.append(temp)
-    #
-    # words_list = list(word_vec_map.keys())
-    # for w in words_list:
-    #     temp = result[km.classify(word_vec_map.get(w))]
-    #     temp.append(w)
-    #
-    # return_data = {}
-    # return_data['clusters'] = result
-    # return_data['centers'] = km.means()
-    # return return_data
-
-    # K = range(2, number_means)
-    # meandistortions = []
-    # sc_scores = []
-    # matrix = np.array(matrix)
-    # for k in K:
-    #     kmeans_sk = KMeans(n_clusters=k, n_init=10).fit(matrix)
-    #     # meandistortions.append(kmeans_sk.inertia_)
-    #     sc_score = silhouette_score(matrix,kmeans_sk.labels_,metric='euclidean')
-    #     meandistortions.append(sum(np.min(cdist(matrix, kmeans_sk.cluster_centers_, 'euclidean'), axis=1)) / matrix.shape[0])
-    #     sc_scores.append(sc_score)
-    #
-    # plt.figure(1)
-    # plt.plot(K, meandistortions, 'b-')
-    # plt.xlabel('k')
-    #
-    # plt.figure(2)
-    # plt.plot(K, sc_scores, '*-')
-    # plt.xlabel('Number of Clusters')
-    # plt.ylabel('Silhouette Coefficient Score')
-    #
-    # plt.show()
-
-    # result = []
-    # for i in range(0, number_means):
-    #     temp = []
-    #     result.append(temp)
-    #
-    # for i in range(0, len(matrix) - 1):
-    #     index_word = (kmeans_sk.labels_)[i]
-    #     print(index_word)
-    #     result[index_word].append(word_list[i])
-    # print(result)
-    # return sc_score
-
-
-# def em_cluster(centers, matrix, word_vec_map):
-#     if IF_DEBUG:
-#         print("[INFO] start doing EM clustering...")
-#     em = nltk.cluster.EMClusterer(initial_means = centers, bias=0.1)
-#     em.cluster(matrix)
-#
-#     result = []
-#     num_cluster = len(centers)
-#     for i in range(0, num_cluster):
-#         temp = []
-#         result.append(temp)
-#
-#     words_list = list(word_vec_map.keys())
-#     for w in words_list:
-#         temp = result[em.classify(word_vec_map.get(w))]
-#         temp.append(w)
-#     return result
