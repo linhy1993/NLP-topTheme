@@ -18,3 +18,4 @@ if __name__ == '__main__':
     top_theme_obj.set_quantizator(word2vector)
     top_theme_obj.set_phrase_quantizator(phrases2vec_new)
     top_theme_obj.build("in", 15)
+    top_theme_obj.query("what is the skills of leadership ? ")

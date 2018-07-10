@@ -12,7 +12,7 @@ conn = MongoClient(settings["uri"])
 db = conn[settings["db_name"]]
 my_set = db[settings["collection_name"]]
 #插入
-def insert(dic):
+def insert_dic(dic):
     my_set.insert(dic)
     print("插入成功")
 #更新
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     dic = {"name": "tom", "age": 18}
 
 
-    insert(dic)
+    insert_dic(dic)
     findAll()
 
     update({"name": "tom"}, {"$set": {"age": "25"}})

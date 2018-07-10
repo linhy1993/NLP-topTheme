@@ -175,6 +175,7 @@ class TopTheme:
         for token in lst_tokens_fr:
             if ' ' not in token:
                 after_trans = translator.translate(token, dest='en')
+                print(after_trans.text)
                 ####tanslate to engish after_tran
                 temp_vector = self.quantizator(after_trans.text)
                 if len(temp_vector) > 0:
@@ -188,15 +189,28 @@ class TopTheme:
                     matrix.append(temp_vector)
                     word_vec_map[token] = temp_vector
 
-        # theme cluster
-        theme_clustered = self.theme_cluster(num_cluster, matrix, list(word_vec_map.keys()))
-        ###########存进数据库里 theme cluster###############
 
+
+
+        # theme cluster
+        theme_clustered = self.theme_cluster(num_cluster, matrix, list(word_vec_map.keys()), word_vec_map)
+        ###########存进数据库里 theme cluster###############
+        ###
 
         ###################################################
         elapsed = (time.clock() - start_time)
         print("========== END ========")
-        for cluster in theme_clustered:
-            print(cluster)
-            print("\n")
+        print(theme_clustered['clusters'])
+        print("\n")
+
+        print(theme_clustered['centers'])
+        print('\n')
+
+        print(theme_clustered['near_word'])
+        print('\n')
         print("RUNNING TIME:" + str(elapsed) + " sec" )
+
+    def query(self, question):
+
+        print(question)
+
