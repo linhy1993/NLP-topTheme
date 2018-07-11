@@ -46,7 +46,7 @@ def kmeans(number_means, matrix, word_list, get_word_vec):
 
     ###################存进数据库#####################
     for i in K:
-        input_cluster_analysis = {"_id": "K value is "+str(i)+"@"+ str(version) }
+        input_cluster_analysis = {"_id": "K value is  "+str(i) }
         input_cluster_analysis["elbow value"] = meandistortions[i - 3]
         input_cluster_analysis["sc scores"] = sc_scores[i - 3]
         insert("cluster_analysis", input_cluster_analysis)
@@ -101,7 +101,7 @@ def kmeans(number_means, matrix, word_list, get_word_vec):
 
     ########save theme#######
     for i in range(0, bestK):
-        input_theme = {"_id": "theme"+str(i)+"@"+ str(version) }
+        input_theme = {"_id": "theme"+str(i) }
         input_theme["themes"] = nearest_word[i]
         input_theme["tokens"] = result[i]
         insert("themes",input_theme)

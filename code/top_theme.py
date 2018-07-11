@@ -23,7 +23,7 @@ from repo import insert
 
 
 IF_DEBUG = False
-version = 0.2
+
 
 class TopTheme:
 
@@ -150,7 +150,7 @@ class TopTheme:
         save_txt(str_of(inversed_index_fr), 'out/index_fr.txt')
         index = 0
         for i in range(0,len(sentences_store)):
-            input_sentence={"_id":str(index)+ '@' + str(version)}
+            input_sentence={"_id":str(index)}
             index = index + 1
             input_sentence["content"] = sentences_store[i]
             sentences_store[i] = input_sentence
